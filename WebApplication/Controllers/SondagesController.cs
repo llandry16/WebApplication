@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using WebApplication.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -117,6 +119,8 @@ namespace WebApplication.Controllers
            },
         };
 
+        private static IDictionary<string, bool> asVoted = new Dictionary<string, bool>();
+
         // GET: api/sondages
         [HttpGet]
         public ActionResult<IEnumerable<Sondage>> Get()
@@ -139,6 +143,13 @@ namespace WebApplication.Controllers
         [Authorize(Policy = Policies.User)]
         public ActionResult Post(Reponse reponse)
         {
+            var jwt = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+            var handler = new JwtSecurityTokenHandler();
+            var user = handler.ReadJwtToken(jwt).Claims.Where(c => c.Type == "username").FirstOrDefault().Value;
+            if (asVoted.ContainsKey(user) && asVoted[user]) {
+                return Unauthorized();
+            }
+            asVoted.Add(user, true);
             return Ok();
         }
     }
