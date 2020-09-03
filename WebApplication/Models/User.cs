@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace WebApplication.Models
 {
-    public class Credential
+    public class User
     {
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string Password { get; set; }
+        public string UserRole { get; set; }
     }
 }

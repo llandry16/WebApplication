@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Models;
 
@@ -135,11 +136,9 @@ namespace WebApplication.Controllers
 
         // POST api/sondages
         [HttpPost]
+        [Authorize(Policy = Policies.User)]
         public ActionResult Post(Reponse reponse)
         {
-            if (!Globals.authenticated) {
-                return Unauthorized();
-            }
             return Ok();
         }
     }
