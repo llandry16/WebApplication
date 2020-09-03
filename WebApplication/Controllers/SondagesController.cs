@@ -63,63 +63,8 @@ namespace WebApplication.Controllers
             },
         };
 
-        private List<List<Dictionary<string, int>>> resultats = new List<List<Dictionary<string, int>>>()
-        {
-           new List<Dictionary<string, int>>(){ 
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-           },
-           new List<Dictionary<string, int>>(){
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-                new Dictionary<string, int>(){
-                    {"a", 0},
-                    {"b", 0},
-                    {"c", 0},
-                    {"d", 0},
-                },
-           },
-        };
 
-        private static IDictionary<string, bool> asVoted = new Dictionary<string, bool>();
+        private static IDictionary<string, Reponse> results = new Dictionary<string, Reponse>();
 
         // GET: api/sondages
         [HttpGet]
@@ -143,13 +88,18 @@ namespace WebApplication.Controllers
         [Authorize(Policy = Policies.User)]
         public ActionResult Post(Reponse reponse)
         {
+            if (reponse.SondageId != 1 && reponse.SondageId != 2)
+            {
+                return Forbid();
+            }
             var jwt = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
             var handler = new JwtSecurityTokenHandler();
             var user = handler.ReadJwtToken(jwt).Claims.Where(c => c.Type == "username").FirstOrDefault().Value;
-            if (asVoted.ContainsKey(user) && asVoted[user]) {
-                return Unauthorized();
+            var key = String.Concat(user, reponse.SondageId);
+            if (results.ContainsKey(key) && results[key].Reponses != null) {
+                return Forbid();
             }
-            asVoted.Add(user, true);
+            results.Add(key, reponse);
             return Ok();
         }
     }
