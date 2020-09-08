@@ -10,12 +10,25 @@ namespace XUnitTestProject
     public class SondagesControllerTests : IntegrationTest
     {
         [Fact]
-        public async Task Get_ReturnAllSondagesBadAuthentificationUnauthorized()
+        public async Task Get_ReturnBadAuthentification()
         {
             // Arrange
 
             // Act
             var response = await GetBadJwtAsync();
+
+            // Assert
+            Assert.Equal("Unauthorized", response.StatusCode.ToString());
+        }
+
+        [Fact]
+        public async Task Get_ReturnBadApiKey()
+        {
+            // Arrange
+            BadApiKey();
+            // Act
+            
+            var response = await TestClient.GetAsync("api/sondages");
 
             // Assert
             Assert.Equal("Unauthorized", response.StatusCode.ToString());

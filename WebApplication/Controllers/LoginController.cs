@@ -22,6 +22,7 @@ namespace WebApplication.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [ApiKeyAuth]
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;

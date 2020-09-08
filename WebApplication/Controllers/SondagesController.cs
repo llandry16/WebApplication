@@ -16,6 +16,7 @@ namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiKeyAuth]
     public class SondagesController : ControllerBase
     {
         private static readonly List<Sondage> sondages = new List<Sondage>(){

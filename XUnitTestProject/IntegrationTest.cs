@@ -23,6 +23,7 @@ namespace XUnitTestProject
 
         protected async Task AuthenticateAsync()
         {
+            TestClient.DefaultRequestHeaders.Add("ApiKey", "MySecretKey");
             TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetJwtAsync());
 ;       }
 
@@ -49,6 +50,11 @@ namespace XUnitTestProject
             });
 
             return response;
+        }
+
+        protected void BadApiKey()
+        {
+            TestClient.DefaultRequestHeaders.Add("ApiKey", "WrongApiKey");
         }
     }
 }
